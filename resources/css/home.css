@@ -1,0 +1,283 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
+
+/* Adicione ou ajuste estas regras no seu CSS */
+
+.navbar {
+    font-size: 18px;
+    background-color: #444c56 !important;
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    font-size: inherit;
+}
+
+.nav-link {
+    color: #2ecc71;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    vertical-align: baseline;
+}
+
+
+body {
+    background-color: #444c56;
+    color: #FFFEDF;
+    font-family: 'Open Sans', sans-serif;
+}
+
+a {
+    color: #2ecc71 !important;
+    text-decoration: none;
+    font-weight: 600
+}
+
+.footer-text {
+    color: #2ecc71 !important;
+    text-decoration: none;
+}
+
+.center {
+    cursor: default;
+    width: 100%;
+    padding-right: 15%;
+    padding-left: 15%;
+    margin: auto;
+    display: flexbox;
+    justify-content: space-between;
+    position: relative;
+}
+
+.title {
+    padding-top: 10px;
+    width: 100%;
+    font-weight: 600;
+    text-align: center;
+    font-size: 24px;
+    padding-bottom: 15px;
+}
+
+.settings {
+    width: 100%;
+    padding-right: 30%;
+    padding-left: 30%;
+    display: table;
+    margin: auto;
+    position: relative;
+    text-align: center;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.session {
+    width: auto;
+    float: right;
+}
+
+.session .description {
+    color: #2ecc71 !important;
+}
+
+.break {
+    width: auto;
+    float: left;
+}
+
+.break .description {
+    color: #e74c3c !important;
+}
+
+.control {
+    cursor: pointer;
+}
+
+.control:hover {
+    color: #95a5a6;
+}
+
+.next-pomodoro {
+    margin: 0 auto;
+    padding-left: 30%;
+    padding-right: 10%;
+    float: left;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.reset-pomodoro {
+    margin: 0 auto;
+    padding-left: 17%;
+    float: left;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.pomodoro {
+    cursor: pointer;
+    width: 12.5rem;
+    height: 12.5rem;
+    margin: auto;
+    clear: both;
+    border-radius: 50%;
+    border: 3px #2ecc71 solid;
+    position: relative;
+    overflow: hidden;
+    text-shadow: none;
+}
+
+.fill {
+    width: auto;
+    height: 0%;
+    border-radius: 50%;
+    border: 3rem #2ecc71 solid;
+    position: absolute;
+    left: 0;
+}
+
+.fill.session {
+    bottom: 0;
+    z-index: 2;
+    background-color: #2ecc71;
+}
+
+.fill.break {
+    top: 0;
+    z-index: 3;
+    background-color: #c0392b;
+}
+
+.time-left {
+    width: auto;
+    margin: 50px 10px 10px 10px;
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+.status {
+    width: auto;
+    text-align: center;
+}
+
+.fullycycle,
+.completed {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 25px;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+.completed {
+    padding-top: 10px;
+}
+
+/* TO-DO List */
+
+.todo-text {
+    margin: 0 auto;
+    /* display: flow; */
+}
+
+.todo-list {
+    width: 100%;
+    padding-top: 5%;
+    padding-right: 15%;
+    padding-left: 15%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#newTask {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 2px solid #2ecc71;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#addTask {
+    background-color: #2ecc71;
+    color: #FFFEDF;
+    border: 2px solid #2ecc71;
+    border-radius: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.list-group {
+    width: 55%;
+    padding: 12px 20px;
+    margin: 8px auto; /* Altere 'auto' para '0' se necessário */
+}
+
+
+#addTask:hover {
+    background-color: #27ae60;
+}
+
+ul #taskList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #2ecc71;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #FFFEDF;
+}
+
+.todo-item .task-text {
+    color: #202429;
+    flex-grow: 1;
+    overflow-wrap: anywhere;
+}
+
+.delete-task {
+    cursor: pointer;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.completed-task .task-text {
+    text-decoration: line-through;
+    color: #7f8c8d;
+}
+
+
+/* Media Query's */
+/* Adicione a media query para ajustar o padding em telas de smartphones */
+@media only screen and (max-width: 770px) {
+    .settings {
+        padding-right: 15%;
+        padding-left: 15%;
+    }
+
+    .todo-list {
+        padding-right: 5%;
+        padding-left: 5%;
+    }
+
+    /* .todo-text {
+        font-size: 15px; /* ou ajuste conforme necessário
+    } */
+}
