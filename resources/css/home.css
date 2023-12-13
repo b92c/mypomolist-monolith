@@ -1,7 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
 
-/* Adicione ou ajuste estas regras no seu CSS */
-
 .navbar {
     font-size: 18px;
     background-color: #444c56 !important;
@@ -134,11 +132,14 @@ a {
     text-shadow: none;
 }
 
+.pomodoro.break-mode {
+    border-color: #e74c3c !important;
+}
+
 .fill {
     width: auto;
     height: 0%;
     border-radius: 50%;
-    border: 3rem #2ecc71 solid;
     position: absolute;
     left: 0;
 }
@@ -146,13 +147,11 @@ a {
 .fill.session {
     bottom: 0;
     z-index: 2;
-    background-color: #2ecc71;
 }
 
 .fill.break {
     top: 0;
     z-index: 3;
-    background-color: #c0392b;
 }
 
 .time-left {
@@ -186,7 +185,6 @@ a {
 
 .todo-text {
     margin: 0 auto;
-    /* display: flow; */
 }
 
 .todo-list {
@@ -220,7 +218,7 @@ a {
 .list-group {
     width: 55%;
     padding: 12px 20px;
-    margin: 8px auto; /* Altere 'auto' para '0' se necessário */
+    margin: 8px auto;
 }
 
 
@@ -276,8 +274,4 @@ ul #taskList {
         padding-right: 5%;
         padding-left: 5%;
     }
-
-    /* .todo-text {
-        font-size: 15px; /* ou ajuste conforme necessário
-    } */
 }
