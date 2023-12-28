@@ -132,9 +132,6 @@ a {
     text-shadow: none;
 }
 
-.pomodoro.break-mode {
-    border-color: #e74c3c !important;
-}
 
 .fill {
     width: auto;
@@ -256,9 +253,16 @@ ul #taskList {
     color: #e74c3c;
 }
 
-.completed-task .task-text {
+.completed-task {
     text-decoration: line-through;
     color: #7f8c8d;
+}
+
+.complete-task {
+    cursor: pointer;
+    font-weight: bold;
+    color: #2ecc71;
+    margin-left: 5px;
 }
 
 

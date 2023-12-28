@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Pomodoro
     let sessionLength = 25;
     let breakLength = 5;
-    let isSession = true;
+    let isSession = false;
     let timeLeft = sessionLength * 60;
     let isPaused = true;
     let fillAnimationSess = null;
@@ -17,6 +17,23 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("cookieNoticeModal")
     );
     const hasAcceptedCookies = localStorage.getItem("cookiesAccepted");
+
+    function updateBorderColor() {
+        let pomodoroElement = document.querySelector(".pomodoro");
+
+        console.log("Valor de isSession: ", isSession);
+        console.log("Valor de isPaused: ", isPaused);
+
+        if (isSession === true && isPaused === false) {
+            console.log("Entrou no isSession true");
+            pomodoroElement.style.borderColor = "#2ecc71"; // Cor verde
+        }
+
+        if (isSession === false && isPaused === true) {
+            console.log("Entrou no isPaused false");
+            pomodoroElement.style.borderColor = "#e74c3c"; // Cor vermelha
+        }
+    }
 
     // If not accepted yet, display the notice modal
     if (hasAcceptedCookies !== "true") {
@@ -49,7 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
         taskList
             .querySelectorAll(".todo-item .task-text")
             .forEach(function (task) {
-                tasks.push(task.textContent);
+                tasks.push({
+                    text: task.textContent,
+                    completed:
+                        task.parentElement.classList.contains("completed-task"),
+                });
             });
 
         setCookie("tasks", JSON.stringify(tasks), 360);
@@ -66,13 +87,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Limpa as tarefas existentes
             taskList.innerHTML = "";
 
-            tasks.forEach(function (taskText) {
+            tasks.forEach(function (taskData) {
                 const taskItem = document.createElement("li");
                 taskItem.className = "todo-item";
                 taskItem.innerHTML = `
-                    <div class="task-text">${taskText}</div>
-                    <div class="delete-task">X</div>
-                `;
+                <div class="task-text">${decodeURIComponent(
+                    taskData.text
+                )}</div>
+                <div class="delete-task">❌</div>
+                <div class="complete-task" title="Mark as completed">✅</div>
+            `;
+
+                if (taskData.completed) {
+                    taskItem.classList.add("completed-task");
+                }
 
                 const deleteButton = taskItem.querySelector(".delete-task");
                 deleteButton.addEventListener("click", function () {
@@ -83,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         taskList.appendChild(taskItem);
                     }
 
-                    saveTasksToCookie(); // Salva as tarefas após a remoção ou conclusão
+                    saveTasksToCookie();
                 });
 
                 taskList.appendChild(taskItem);
@@ -101,78 +129,86 @@ document.addEventListener("DOMContentLoaded", function () {
             sessionLength;
     }
 
-    function pausePomodoro() {
-        if (fillAnimationSess !== null) {
-            fillAnimationSess.cancel();
-        }
-
-        if (fillAnimationBreak !== null) {
-            fillAnimationBreak.cancel();
-        }
-        isPaused = true;
-        clearInterval(intervalCounter);
-        document.querySelector(".status").textContent = "Tap to start";
-    }
-
     function nextStep() {
+        console.log('Entrou no nextStep');
         if (isSession) {
+            console.log('Entrou no if do nextStep');
             timeLeft = breakLength * 60;
-            document.querySelector(".fill.session").style.height = "100%";
-            document.querySelector(".fill.break").style.height = "0%";
-            fillAnimationBreak = document
-                .querySelector(".fill.break")
-                .animate([{ height: "0%" }, { height: "100%" }], {
-                    duration: timeLeft * 1000,
-                });
-            isSession = false;
-
-            completed++;
-            pauseAudio.play();
-            document.querySelector(".completed").textContent = "";
-
-            if (completed > 3) {
-                timeLeft = 25 * 60;
-                document.querySelector(".fullycycle").textContent = "🌳";
-            } else {
-                for (let i = 0; i < completed; i++)
-                    document.querySelector(".completed").textContent += "🍅";
-            }
-
-            // Adiciona classe ao elemento .pomodoro para estilizar a borda
-            document.querySelector(".pomodoro").classList.remove("break-mode");
+            isSession = false; // Atualize isSession corretamente
+            updateBorderColor(); // Atualize a cor da borda
         } else {
-            document.querySelector(".fill.session").style.height = "0%";
-            document.querySelector(".fill.break").style.height = "0%";
-
-            backwardAudio.play();
-
-            isSession = true;
+            console.log('Entrou no else do nextStep');
             timeLeft = sessionLength * 60;
-
-            fillAnimationSess = document
-                .querySelector(".fill.session")
-                .animate([{ height: "0%" }, { height: "100%" }], {
-                    duration: timeLeft * 1000,
-                });
-
-            // Adiciona classe ao elemento .pomodoro para estilizar a borda
-            document.querySelector(".pomodoro").classList.add("break-mode");
+            isSession = true; // Atualize isSession corretamente
+            updateBorderColor(); // Atualize a cor da borda
         }
+
+        document.querySelector(".fill.session").style.height = isSession ? "0%" : "100%";
+        document.querySelector(".fill.break").style.height = isSession ? "100%" : "0%";
+
+        // Ajuste 1: Remova as animações existentes
+        if (fillAnimationSess) fillAnimationSess.cancel();
+        if (fillAnimationBreak) fillAnimationBreak.cancel();
+
+        // Ajuste 2: Defina a animação com base no tempo correto
+        if (isSession) {
+            fillAnimationBreak = document.querySelector(".fill.break").animate([{ height: "0%" }, { height: "100%" }], {
+                duration: breakLength * 60 * 1000, // Usando breakLength em vez de timeLeft
+            });
+        } else {
+            fillAnimationSess = document.querySelector(".fill.session").animate([{ height: "0%" }, { height: "100%" }], {
+                duration: sessionLength * 60 * 1000, // Usando sessionLength em vez de timeLeft
+            });
+        }
+
+        isSession = !isSession;
+        completed++;
+        pauseAudio.play();
+
+        document.querySelector(".completed").textContent = "";
     }
+
 
     function startPomodoro() {
+        console.log('Entrou no startPomo');
         intervalCounter = setInterval(function () {
             if (timeLeft > 0) {
                 timeLeft--;
-                document.querySelector(".pomodoro>.time-left").textContent =
-                    getFormattedTime();
-            } else nextStep();
+                document.querySelector(".pomodoro>.time-left").textContent = getFormattedTime();
+            } else {
+                nextStep();
+            }
         }, 1000);
+        isSession = true;
         isPaused = false;
-        isSession = !isSession;
-        nextStep();
+
+        if (isSession) {
+            timeLeft = sessionLength * 60; // Se estiver em um período de trabalho, ajuste para o tempo de trabalho
+        } else {
+            timeLeft = breakLength * 60; // Se estiver em um período de pausa, ajuste para o tempo de pausa
+        }
+
         document.querySelector(".status").textContent = "Tap to stop";
+        updateBorderColor(); // Atualize a cor da borda
     }
+
+
+    function pausePomodoro() {
+        console.log('Entrou no pause');
+        clearInterval(intervalCounter);
+
+        if (isSession) {
+            timeLeft = sessionLength * 60; // Se estiver em um período de trabalho, ajuste para o tempo de trabalho
+        } else {
+            timeLeft = breakLength * 60; // Se estiver em um período de pausa, ajuste para o tempo de pausa
+        }
+
+        isPaused = true;
+        isSession = false;
+        document.querySelector(".status").textContent = "Tap to start";
+        updateBorderColor(); // Atualize a cor da borda
+    }
+
 
     document.querySelector(".pomodoro>.time-left").textContent =
         getFormattedTime();
@@ -180,19 +216,28 @@ document.addEventListener("DOMContentLoaded", function () {
     document
         .querySelector(".reset-pomodoro")
         .addEventListener("click", function () {
-            pausePomodoro();
+            // pausePomodoro();
+            // if (isPaused === false) {
+            //     pausePomodoro();
+            // } else {
+            //     startPomodoro();
+            // }
             isSession = !isSession;
             nextStep();
             document.querySelector(".pomodoro>.time-left").textContent =
                 getFormattedTime();
         });
 
+    //TODO: alterar essa regra para entrar em pausePomodoro ou StartPomodoro dependendo da flag de isSession ou isaPause
     document
         .querySelector(".next-pomodoro")
         .addEventListener("click", function () {
-            pausePomodoro();
+            if (isPaused === false) {
+                pausePomodoro();
+            } else {
+                startPomodoro();
+            }
             isSession = !isSession;
-            startPomodoro();
         });
 
     document.querySelector(".pomodoro").addEventListener("click", function () {
@@ -225,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .addEventListener("click", function () {
             if (sessionLength > 1) {
                 sessionLength--;
-                pausePomodoro();
+                // pausePomodoro();
                 if (isSession) {
                     timeLeft = sessionLength * 60;
                 } else {
@@ -288,7 +333,8 @@ document.addEventListener("DOMContentLoaded", function () {
             taskItem.className = "todo-item";
             taskItem.innerHTML = `
         <div class="task-text">${taskText}</div>
-        <div class="delete-task">X</div>
+        <div class="delete-task" title="Delete task">❌</div>
+        <div class="complete-task" title="Mark as completed">✅</div>
       `;
 
             taskList.appendChild(taskItem);
@@ -322,27 +368,44 @@ document.addEventListener("DOMContentLoaded", function () {
         .addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 addTask();
+                saveTasksToCookie();
             }
         });
 
-    const taskList = document.getElementById("taskList");
-    taskList.addEventListener("click", function (event) {
-        const target = event.target;
+    // Adicionar evento ao botão de concluir tarefa para salvar no cookie
+    document
+        .getElementById("taskList")
+        .addEventListener("click", function (event) {
+            const target = event.target;
 
-        // Verificar se o clique foi em um botão de exclusão
-        if (target.classList.contains("delete-task")) {
-            const taskItem = target.parentElement;
-
-            if (taskItem.classList.contains("completed-task")) {
-                taskItem.classList.remove("completed-task");
-            } else {
-                markTaskAsCompleted(taskItem);
-                taskList.appendChild(taskItem);
+            // Verificar se o clique foi no botão de exclusão
+            if (target.classList.contains("delete-task")) {
+                const taskItem = target.parentElement;
+                deleteTask(taskItem);
+                saveTasksToCookie();
             }
 
-            saveTasksToCookie();
-        }
-    });
+            // Verificar se o clique foi no botão de completar
+            if (target.classList.contains("complete-task")) {
+                const taskItem = target.parentElement;
+                markTaskAsCompleted(taskItem);
+                moveTaskToBottom(taskItem);
+                saveTasksToCookie();
+            }
+        });
+
+    function deleteTask(taskItem) {
+        taskItem.remove();
+    }
+
+    function markTaskAsCompleted(taskItem) {
+        taskItem.classList.add("completed-task");
+    }
+
+    function moveTaskToBottom(taskItem) {
+        const taskList = document.getElementById("taskList");
+        taskList.appendChild(taskItem);
+    }
 
     document.getElementById("homeLink").addEventListener("click", function () {
         window.scrollTo(0, 0); // Direciona para o topo da página
