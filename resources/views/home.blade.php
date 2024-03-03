@@ -80,7 +80,7 @@
     <div class="pomodoro">
         <div class="fill session"></div>
         <div class="fill break"></div>
-        <div class="time-left"></div>
+        <div class="counter"></div>
         <div class="status">Start</div>
         <div class="completed"></div>
         <div class="fullycycle"></div>
