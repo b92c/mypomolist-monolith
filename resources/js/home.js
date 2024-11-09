@@ -1,3 +1,4 @@
+let worker = new Worker('timerWorker.js');
 let pomodoroElement = document.querySelector(".pomodoro")
 let completed = 0;
 let pauseAudio = new Audio("pause.mp3");
@@ -9,6 +10,22 @@ let timeLeft = sessionLength * 60;
 let fillAnimationSess = null;
 let fillAnimationBreak = null;
 let intervalCounter = null;
+
+function getFormattedTime() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+worker.onmessage = function (e) {
+    console.log(`Main thread received timeLeft: ${e.data.timeLeft}`);
+    timeLeft = e.data.timeLeft;
+    if (timeLeft > 0) {
+        document.querySelector(".pomodoro>.counter").textContent = getFormattedTime();
+    } else {
+        nextStep();
+    }
+};
 
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the user has already accepted cookies policy
@@ -29,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!isSession) {
             startPomodoro();
         } else {
-            pausePomodoro();
+           stopPomodoro();
         }
     });
 
@@ -49,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!isSession) {
                 startPomodoro();
             } else {
-                pausePomodoro();
+               stopPomodoro();
             }
         });
 
@@ -139,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!isSession) {
             console.log("Entrou no isSession false");
-            pausePomodoro();
+           stopPomodoro();
         }
     }
 
@@ -199,57 +216,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startPomodoro() {
         console.log("Entrou no startPomo");
-        clearInterval(intervalCounter);
-
-        intervalCounter = setInterval(function () {
-        if (timeLeft > 0) {
-            timeLeft--;
-            document.querySelector(".pomodoro>.counter").textContent =
-                getFormattedTime();
-        } else {
-            nextStep();
-        }
-    }, 1000);
-
+        console.log(`Sending start command to worker with timeLeft: ${timeLeft}`);
+        worker.postMessage({ command: "start", timeLeft: timeLeft });
+    
         isSession = true;
-
         timeLeft = sessionLength * 60;
-
         document.querySelector(".status").textContent = "Tap to stop";
         pomodoroElement.style.borderColor = "#2ecc71"; // Green color
-
         updateSettingsTimeValues();
         backwardAudio.play();
     }
 
-    function pausePomodoro() {
-        console.log("Entrou no pause");
-        clearInterval(intervalCounter);
-
-        intervalCounter = setInterval(function () {
-        if (timeLeft > 0) {
-            timeLeft--;
-            document.querySelector(".pomodoro>.counter").textContent =
-                getFormattedTime();
-        } else {
-            nextStep();
-        }
-    }, 1000);
-
-        timeLeft = breakLength * 60;
-
+    function stopPomodoro() {
+        console.log("Sending stop command to worker");
         isSession = false;
-        document.querySelector(".status").textContent = "It's time for a break ☕️";
-
-        pomodoroElement.style.borderColor = "#e74c3c"; // Red color
-        updateSettingsTimeValues();
-        pauseAudio.play();
-    }
-
-    function getFormattedTime() {
-        let minute = Math.floor(timeLeft / 60),
-            second = timeLeft - minute * 60;
-        return minute + ":" + (second < 10 ? "0" : "") + second;
+        worker.postMessage({ command: "stop" });
     }
 
     // Finish pomodoro functions
