@@ -203,7 +203,7 @@
 <div class="container">
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-2 border-top">
         <p class="col-md-4 mb-0 text-body-secondary footer-text">
-            &copy; <a href="https://github.com/Bbarbosa7" target="_blank">Bbarbosa7</a>
+            &copy; <a href="https://github.com/b92c" target="_blank">b92c</a>
         </p>
 
         <ul class="nav col-md-4 justify-content-end">
