@@ -85,11 +85,11 @@
         <div class="completed"></div>
         <div class="fullycycle"></div>
     </div>
+    {{-- <div class="next-pomodoro">
+        {{-- <span>Next</span> --}}
+    {{-- </div> --}}
     <div class="next-pomodoro">
         <span>Next</span>
-    </div>
-    <div class="reset-pomodoro">
-        <span>Reset</span>
     </div>
 </div>
 <div class="container todo-list">

@@ -104,20 +104,19 @@ a {
 
 .next-pomodoro {
     margin: 0 auto;
-    padding-left: 30%;
-    padding-right: 10%;
+    padding-left: 48%;
     float: left;
     cursor: pointer;
     font-weight: bold;
 }
 
-.reset-pomodoro {
+/* .reset-pomodoro {
     margin: 0 auto;
-    padding-left: 17%;
+    padding-left: 48%;
     float: left;
     cursor: pointer;
     font-weight: bold;
-}
+} */
 
 .pomodoro {
     cursor: pointer;
