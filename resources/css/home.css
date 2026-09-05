@@ -110,14 +110,6 @@ a {
     font-weight: bold;
 }
 
-/* .reset-pomodoro {
-    margin: 0 auto;
-    padding-left: 48%;
-    float: left;
-    cursor: pointer;
-    font-weight: bold;
-} */
-
 .pomodoro {
     cursor: pointer;
     width: 12.5rem;
@@ -180,12 +172,33 @@ a {
 /* TO-DO List */
 
 .todo-text {
-    margin: 0 auto;
+    margin: 0.2rem auto;
+    text-align: center;
+    padding-right: 5%;
+    padding-left: 5%;
+    width: fit-content;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+@media only screen and (max-width: 770px) {
+    .todo-text {
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
+        padding-right: 5%;
+        padding-left: 5%;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .next-pomodoro {
+        padding-left: 44%;
+    }
 }
 
 .todo-list {
     width: 100%;
-    padding-top: 5%;
+    padding-top: 3%;
     padding-right: 15%;
     padding-left: 15%;
     margin: 0 auto;
